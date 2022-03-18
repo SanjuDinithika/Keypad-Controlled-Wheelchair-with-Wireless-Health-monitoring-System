@@ -1,0 +1,104 @@
+#include <Keypad.h>
+#define RPWM1 13
+#define LPWM1 12
+#define LEN1 11
+#define RPWM2 40
+#define LPWM2 42
+#define LEN2 10
+
+long duration; // variable for the duration of sound wave travel
+int distance;
+
+int sp =255;
+const byte ROWS = 4; 
+const byte COLS = 3; 
+
+char hexaKeys[ROWS][COLS] = {
+  {'1', '2', '3'},
+  {'4', '5', '6'},
+  {'7', '8', '9'},
+  {'*', '0', '#'}
+};
+
+byte rowPins[ROWS] = {9, 8, 7, 6}; 
+byte colPins[COLS] = {5, 4, 3}; 
+
+Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS); 
+#define echoPin A0 // attach pin D2 Arduino to pin Echo of HC-SR04
+#define trigPin A1 //attach pin D3 Arduino to pin Trig of HC-SR04
+void setup(){
+  pinMode(RPWM1,OUTPUT);
+  pinMode(LPWM1,OUTPUT);
+  pinMode(LEN1,OUTPUT);
+  pinMode(RPWM2,OUTPUT);
+  pinMode(LPWM2,OUTPUT);
+  pinMode(LEN2,OUTPUT);
+char key;
+pinMode(trigPin, OUTPUT); // Sets the trigPin as an OUTPUT
+  pinMode(echoPin, INPUT); // Sets the echoPin as an INPUT
+  Serial.begin(9600);
+}
+  
+void loop(){
+  char customKey = customKeypad.getKey();
+  // Clears the trigPin condition
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  // Sets the trigPin HIGH (ACTIVE) for 10 microseconds
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  duration = pulseIn(echoPin, HIGH);
+  // Calculating the distance
+  distance = duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
+  // Displays the distance on the Serial Monitor
+  Serial.print("Distance: ");
+  Serial.print(distance);
+  Serial.println(" cm");
+  if(distance<20){
+  if (customKey){
+     Serial.println(customKey);
+     
+    if(customKey=='8'){
+     digitalWrite(RPWM1,1);
+    digitalWrite(LPWM1,0);
+     digitalWrite(RPWM2,1);
+    digitalWrite(LPWM2,0);
+    analogWrite(LEN1,255);
+    delay(1000);
+  }
+     if(customKey=='6'){
+     digitalWrite(RPWM1,1);
+    digitalWrite(LPWM1,0);
+     digitalWrite(RPWM2,0);
+    digitalWrite(LPWM2,0);
+    analogWrite(LEN1,255);
+    delay(1000);
+  }
+      if(customKey=='3'){
+     digitalWrite(RPWM1,0);
+    digitalWrite(LPWM1,0);
+     digitalWrite(RPWM2,1);
+    digitalWrite(LPWM2,0);
+    analogWrite(LEN1,255);
+    delay(1000);
+  }
+     if(customKey=='7'){
+     digitalWrite(RPWM1,0);
+    digitalWrite(LPWM1,1);
+     digitalWrite(RPWM2,0);
+    digitalWrite(LPWM2,1);
+    analogWrite(LEN2,255);
+    delay(1000);
+  }
+  
+  }
+  }else{
+       digitalWrite(RPWM1,0);
+    digitalWrite(LPWM1,0);
+     digitalWrite(RPWM2,0);
+    digitalWrite(LPWM2,0);
+    analogWrite(LEN2,255);
+  }
+}
