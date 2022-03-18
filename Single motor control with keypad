@@ -1,0 +1,44 @@
+#include <Keypad.h>
+#define RPWM 13
+#define LPWM 12
+#define LEN 11
+int sp =255;
+const byte ROWS = 4; 
+const byte COLS = 3; 
+char hexaKeys[ROWS][COLS] = {
+  {'1', '2', '3'},
+  {'4', '5', '6'},
+  {'7', '8', '9'},
+  {'*', '0', '#'}
+};
+byte rowPins[ROWS] = {9, 8, 7, 6}; 
+byte colPins[COLS] = {5, 4, 3}; 
+Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS); 
+
+void setup(){
+  Serial.begin(9600);
+    Serial.begin(9600);
+  pinMode(RPWM,OUTPUT);
+  pinMode(LPWM,OUTPUT);
+  pinMode(LEN,OUTPUT);
+char key;
+}
+  
+void loop(){
+  char customKey = customKeypad.getKey();
+  if (customKey){
+     Serial.println(customKey);
+    if(customKey=='2'){
+     digitalWrite(RPWM,1);
+    digitalWrite(LPWM,0);
+    analogWrite(LEN,255);
+    delay(1000);
+  }
+     if(customKey=='8'){
+     digitalWrite(RPWM,0);
+    digitalWrite(LPWM,1);
+    analogWrite(LEN,255);
+    delay(1000);
+  }
+  }
+}
