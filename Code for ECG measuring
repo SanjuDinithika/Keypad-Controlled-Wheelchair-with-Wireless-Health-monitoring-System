@@ -1,0 +1,39 @@
+#include <ESP8266WiFi.h>
+#include <Wire.h>
+#include "ThingSpeak.h"
+const char *ssid = "Enter router SSID here"; 
+const char *password = "Enter WiFi password here";
+unsigned long chanelId = Enter ThingSpeak channel ID here;
+const char *writeAPIkey = "Enter ThingSpeak channel Write API key here";
+WiFiClient client;
+void setup() 
+{
+Serial.begin(9600);
+pinMode(14, INPUT); 
+pinMode(12, INPUT); 
+WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password); 
+  Serial.println("Connecting to Wifi");
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.print(".");
+  }
+  Serial.println("");
+  Serial.print("Connected to ");
+  Serial.println(ssid);
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
+
+  ThingSpeak.begin(client);
+}
+void loop() {
+int respons = ThingSpeak.writeField(chanelId,5,analogRead(A0),writeAPIkey);
+if((digitalRead(10) == 1)||(digitalRead(11) == 1)){
+Serial.println('!');
+}
+else{
+// send the value of analog input 0:
+Serial.println(analogRead(A0));
+}
+//Wait for a bit to keep serial data from saturating
+delay(1);
+}
